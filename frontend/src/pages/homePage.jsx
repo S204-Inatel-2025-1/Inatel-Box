@@ -1,3 +1,5 @@
+//path: frontend/src/pages/homePage.jsx
+
 import React from 'react';
 
 const HomePage = () => {

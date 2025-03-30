@@ -1,3 +1,5 @@
+//path: frontend/src/components/navbar.jsx
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 
