@@ -5,7 +5,7 @@ import React from 'react';
 const HomePage = () => {
     return (
       <div style={styles.container}>
-        <h1 style={styles.title}>Em Desenvolviemnto</h1>
+        <h1 style={styles.title}>Em Desenvolvimento</h1>
       </div>
     );
 };

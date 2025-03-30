@@ -1,4 +1,4 @@
-//path: frontend/src/pages/ErrorPage.jsx
+//path: frontend/src/pages/errorPage.jsx
 
 import React from "react";
 

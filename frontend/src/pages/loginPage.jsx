@@ -1,5 +1,3 @@
-//path: frontend/src/pages/loginPage.jsx
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../services/fireBaseConfig';
@@ -70,9 +68,15 @@ const LoginPage = () => {
           style={styles.select}
           value={usuarioSelecionado ? usuarioSelecionado.matricula : ''}
           onChange={(e) => {
-            const usuario = usuarios.find((u) => u.matricula === e.target.value);
-            setUsuarioSelecionado(usuario);
-            setMatricula(usuario.matricula);
+            const selectedMatricula = e.target.value;
+            const usuario = usuarios.find((u) => u.matricula === selectedMatricula);
+            if (usuario) {
+              setUsuarioSelecionado(usuario);
+              setMatricula(usuario.matricula);
+            } else {
+              setUsuarioSelecionado(null);
+              setMatricula('');
+            }
           }}
         >
           <option value="">Selecione um usuário</option>
