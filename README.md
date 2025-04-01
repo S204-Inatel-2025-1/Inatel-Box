@@ -32,8 +32,7 @@ As tarefas são distribuídas entre os membros da equipe e gerenciadas por meio 
 - **Back-end:** Firebase (Authentication, Firestore, Storage)
 - **Testes:** Cypress, Jest e K6
 
-## 🚀 Processo de Desenvolvimento
-### 🔍 Descoberta e Pesquisa
+## 🚀 Motivação
 O projeto começou com um levantamento das necessidades dos alunos da RobotBulls quando precisam de alguma ferramenta ou algum componente. 
 
 
