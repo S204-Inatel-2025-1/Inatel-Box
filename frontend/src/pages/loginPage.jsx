@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+<<<<<<< Updated upstream
 import { login } from '../services/api'; // Importe a função de login do serviço de API
+=======
+import { login } from '../services/api';
+>>>>>>> Stashed changes
 
 const LoginPage = () => {
   const [matricula, setMatricula] = useState('');
   const [senha, setSenha] = useState('');
+<<<<<<< Updated upstream
   const [usuarios, setUsuarios] = useState([]); // Estado para armazenar os usuários cadastrados
   const [usuarioSelecionado, setUsuarioSelecionado] = useState(null); // Estado para o usuário selecionado
   const [error, setError] = useState(''); // Estado para mensagens de erro
@@ -17,6 +22,23 @@ const LoginPage = () => {
       const response = await fetch('http://localhost:5000/auth/usuarios');
       const data = await response.json();
       setUsuarios(data);
+=======
+  const [usuarios, setUsuarios] = useState([]);
+  const [usuarioSelecionado, setUsuarioSelecionado] = useState(null);
+  const [error, setError] = useState('');
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const carregarUsuarios = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/auth/usuarios');
+        const data = await response.json();
+        setUsuarios(data);
+      } catch (err) {
+        console.error('Erro ao carregar usuários:', err);
+      }
+>>>>>>> Stashed changes
     };
 
     carregarUsuarios();
@@ -24,16 +46,24 @@ const LoginPage = () => {
 
   const handleLogin = async () => {
     try {
+      setError(''); // Limpa erros anteriores
+      
       if (!usuarioSelecionado) {
         alert('Selecione um usuário!');
         return;
       }
 
+<<<<<<< Updated upstream
       // Faz a chamada ao backend para autenticar o usuário
       const user = await login(usuarioSelecionado.matricula, senha);
 
       console.log('Login bem-sucedido:', user);
       navigate('/home', { state: { user } }); // Redireciona para a home com os dados do usuário
+=======
+      const user = await login(usuarioSelecionado.matricula, senha);
+      console.log('Login bem-sucedido:', user);
+      navigate('/home', { state: { user } });
+>>>>>>> Stashed changes
     } catch (error) {
       setError('Matrícula ou senha incorretas');
     }
@@ -50,6 +80,7 @@ const LoginPage = () => {
             const usuario = usuarios.find((u) => u.matricula === e.target.value);
             setUsuarioSelecionado(usuario);
             setMatricula(usuario.matricula);
+            setError(''); // Limpa erro ao selecionar novo usuário
           }}
         >
           <option value="">Selecione um usuário</option>
@@ -65,8 +96,18 @@ const LoginPage = () => {
           type="password"
           placeholder="Senha"
           value={senha}
-          onChange={(e) => setSenha(e.target.value)}
+          onChange={(e) => {
+            setSenha(e.target.value);
+            setError(''); // Limpa erro ao digitar nova senha
+          }}
         />
+
+        {/* Exibe a mensagem de erro se existir */}
+        {error && (
+          <div style={styles.errorMessage}>
+            {error}
+          </div>
+        )}
 
         <div style={{ height: '10px' }}></div>
         
@@ -140,6 +181,12 @@ const styles = {
     width: '100%', // Ocupa 100% da largura do form
     marginBottom: '10px', // Adiciona margem inferior para espaçamento entre os botões
     boxSizing: 'border-box', // Garante que padding e borda não aumentem a largura
+  },
+  errorMessage: {
+    color: 'red',
+    fontSize: '14px',
+    marginBottom: '10px',
+    textAlign: 'center',
   },
 };
 
