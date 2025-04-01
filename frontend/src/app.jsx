@@ -1,13 +1,12 @@
-//path: frontend/src/app.jsx
-
+// App.jsx
 import React from 'react';
-import { Outlet } from 'react-router-dom'; //
-import Navbar from './components/navbar';
+import { Outlet } from 'react-router-dom'; // Importe o Outlet
+import Navbar from './components/navbar'; // Exemplo de componente de navegação (opcional)
 
 const App = () => {
   return (
     <div>
-      {}
+      {/* Exemplo de Navbar (opcional) */}
       <Navbar />
 
       {/* Outlet renderiza os componentes filhos das rotas */}

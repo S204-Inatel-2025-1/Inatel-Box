@@ -1,8 +1,6 @@
-//path: frontend/src/services/fireBaseConfig.js
-
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
+import { getFirestore } from 'firebase/firestore';
 
 const fireBaseConfig = {
   apiKey: "AIzaSyC6m0Y7ny-tmoAmSI8Lqzi30Ae6ffbgHAo",
@@ -13,12 +11,12 @@ const fireBaseConfig = {
   appId: "1:296153505650:web:9196bc189ab11dacbb47eb"
 };
 
-//inicializar o Firebase
+// Inicialize o Firebase
 const app = initializeApp(fireBaseConfig);
 
-//obter a instancia do Auth e Firestore
+// Obtenha a instância do Auth e Firestore
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-//expotar funcs
+// Exporte as funções necessárias
 export { auth, db };

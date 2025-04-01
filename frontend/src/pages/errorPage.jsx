@@ -1,5 +1,3 @@
-//path: frontend/src/pages/errorPage.jsx
-
 import React from "react";
 
 const ErrorPage = () => {

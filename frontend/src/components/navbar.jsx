@@ -1,12 +1,14 @@
-//path: frontend/src/components/navbar.jsx
-
+// src/components/Navbar.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   return (
     <nav style={styles.nav}>
-      <Link to="/" style={styles.link}>Start</Link>
+      <Link to="/" style={styles.link}>Charging</Link>
+      <Link to="/login" style={styles.link}>Login</Link>
+      <Link to="/register" style={styles.link}>Register</Link>
+      <Link to="/home" style={styles.link}>Home</Link>
     </nav>
   );
 };

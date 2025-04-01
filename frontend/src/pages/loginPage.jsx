@@ -1,40 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { db } from '../services/fireBaseConfig';
-import { doc, getDoc } from 'firebase/firestore';
+import { login } from '../services/api'; // Importe a função de login do serviço de API
 
 const LoginPage = () => {
   const [matricula, setMatricula] = useState('');
   const [senha, setSenha] = useState('');
-  const [usuarios, setUsuarios] = useState([]); //estado para armazenar os usuários cadastrados
-  const [usuarioSelecionado, setUsuarioSelecionado] = useState(null);
+  const [usuarios, setUsuarios] = useState([]); // Estado para armazenar os usuários cadastrados
+  const [usuarioSelecionado, setUsuarioSelecionado] = useState(null); // Estado para o usuário selecionado
+  const [error, setError] = useState(''); // Estado para mensagens de erro
 
   const navigate = useNavigate();
 
-  //funcao para verificar se um user ainda existe no bd
-  const verificarUsuarioNoBanco = async (matricula) => {
-    const usuarioRef = doc(db, 'alunos', matricula);
-    const usuarioDoc = await getDoc(usuarioRef);
-    return usuarioDoc.exists();
-  };
-
-  //carrega e verifica os users cadastrados
+  // Função para carregar os usuários cadastrados (opcional, se ainda quiser usar a lista de usuários)
   useEffect(() => {
     const carregarUsuarios = async () => {
-      const usuariosCadastrados = JSON.parse(localStorage.getItem('usuarios')) || [];
-
-      // Verifica cada usuário no localStorage
-      const usuariosValidos = [];
-      for (const usuario of usuariosCadastrados) {
-        const usuarioExiste = await verificarUsuarioNoBanco(usuario.matricula);
-        if (usuarioExiste) {
-          usuariosValidos.push(usuario); //adiciona a lista apenas se o user existir no bd
-        }
-      }
-
-      //atualiza o localStorage com a lista de usuários válidos
-      localStorage.setItem('usuarios', JSON.stringify(usuariosValidos));
-      setUsuarios(usuariosValidos);
+      const response = await fetch('http://localhost:5000/auth/usuarios');
+      const data = await response.json();
+      setUsuarios(data);
     };
 
     carregarUsuarios();
@@ -47,16 +29,13 @@ const LoginPage = () => {
         return;
       }
 
-      //verificar senha
-      if (usuarioSelecionado.senha === senha) {
-        console.log('Login bem-sucedido!');
-        navigate('/home');
-      } else {
-        alert('Senha incorreta!');
-      }
+      // Faz a chamada ao backend para autenticar o usuário
+      const user = await login(usuarioSelecionado.matricula, senha);
+
+      console.log('Login bem-sucedido:', user);
+      navigate('/home', { state: { user } }); // Redireciona para a home com os dados do usuário
     } catch (error) {
-      console.error('Erro ao fazer login:', error);
-      alert('Erro ao fazer login: ' + error.message);
+      setError('Matrícula ou senha incorretas');
     }
   };
 
@@ -68,15 +47,9 @@ const LoginPage = () => {
           style={styles.select}
           value={usuarioSelecionado ? usuarioSelecionado.matricula : ''}
           onChange={(e) => {
-            const selectedMatricula = e.target.value;
-            const usuario = usuarios.find((u) => u.matricula === selectedMatricula);
-            if (usuario) {
-              setUsuarioSelecionado(usuario);
-              setMatricula(usuario.matricula);
-            } else {
-              setUsuarioSelecionado(null);
-              setMatricula('');
-            }
+            const usuario = usuarios.find((u) => u.matricula === e.target.value);
+            setUsuarioSelecionado(usuario);
+            setMatricula(usuario.matricula);
           }}
         >
           <option value="">Selecione um usuário</option>
@@ -120,8 +93,8 @@ const styles = {
     height: '100vh',
     width: '100vw',
     backgroundColor: '#f0f0f0',
-    margin: 0,
-    padding: 0,
+    margin: 0, // Remove margens
+    padding: 0, // Remove paddings
   },
   title: {
     fontSize: '24px',
@@ -132,41 +105,41 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
-    maxWidth: '400px',
-    padding: '20px',
+    maxWidth: '400px', // Define uma largura máxima
+    padding: '20px', // Padding interno
     backgroundColor: '#f0f0f0',
-    boxSizing: 'border-box',
+    boxSizing: 'border-box', // Garante que padding não aumente a largura
   },
   input: {
     marginBottom: '10px',
-    padding: '12px',
+    padding: '12px', // Padding interno
     fontSize: '16px',
     borderRadius: '4px',
-    border: '1px solid #ccc',
+    border: '1px solid #ccc', // Borda simples
     width: '100%',
-    boxSizing: 'border-box',
+    boxSizing: 'border-box', // Garante que padding e borda não aumentem a largura
   },
   select: {
     marginBottom: '10px',
-    padding: '12px',
+    padding: '12px', // Padding interno
     fontSize: '16px',
     borderRadius: '4px',
-    border: '1px solid #ccc',
+    border: '1px solid #ccc', // Borda simples
     width: '100%',
     backgroundColor: '#fff',
-    boxSizing: 'border-box',
+    boxSizing: 'border-box', // Garante que padding e borda não aumentem a largura
   },
   button: {
-    padding: '12px',
+    padding: '12px', // Padding interno
     fontSize: '16px',
     backgroundColor: '#007bff',
     color: '#fff',
     border: 'none',
     borderRadius: '4px',
     cursor: 'pointer',
-    width: '100%',
-    marginBottom: '10px',
-    boxSizing: 'border-box',
+    width: '100%', // Ocupa 100% da largura do form
+    marginBottom: '10px', // Adiciona margem inferior para espaçamento entre os botões
+    boxSizing: 'border-box', // Garante que padding e borda não aumentem a largura
   },
 };
 

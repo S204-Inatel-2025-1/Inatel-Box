@@ -1,49 +1,36 @@
-//path: frontend/src/pages/RegisterPage.jsx
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { doc, setDoc } from "firebase/firestore";
-import { db } from "../services/fireBaseConfig";
+import { register } from '../services/api'; // Importe a função de registro do serviço de API
 
 const RegisterPage = () => {
   const [matricula, setMatricula] = useState('');
   const [senha, setSenha] = useState('');
-  const [curso, setCurso] = useState(''); //estado para armazenar o curso selecionado
+  const [curso, setCurso] = useState(''); // Estado para armazenar o curso selecionado
+  const [error, setError] = useState(''); // Estado para mensagens de erro
 
   const navigate = useNavigate();
 
   const handleRegister = async () => {
     try {
-      //verifica se os dados foram preenchidos
+      // Verifica se os dados foram preenchidos
       if (!matricula || !senha || !curso) {
         alert('Preencha todos os campos!');
         return;
       }
-  
-      //cria um novo dado no bd com a matricula como id
-      await setDoc(doc(db, 'alunos', matricula), {
-        matricula,
-        senha,
-        curso,
-      });
-  
-      //salva o user no localStorage
-      const usuario = { matricula, senha, curso };
-      const usuariosCadastrados = JSON.parse(localStorage.getItem('usuarios')) || [];
-      usuariosCadastrados.push(usuario);
-      localStorage.setItem('usuarios', JSON.stringify(usuariosCadastrados));
-  
-      console.log('Aluno cadastrado com sucesso!');
-      navigate('/login');
+
+      // Faz a chamada ao backend para cadastrar o usuário
+      const response = await register(matricula, senha, curso);
+
+      console.log('Usuário cadastrado com sucesso:', response);
+      navigate('/login'); // Redireciona para a tela de login
     } catch (error) {
-      console.error('Erro ao cadastrar usuário:', error.message);
-      alert('Erro ao cadastrar usuário: ' + error.message);
+      setError('Erro ao cadastrar usuário: ' + error.message);
     }
   };
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.title}>Inatel Box</h2>
+      <h2 style={styles.title}>Almoxarifado Inatel</h2>
       <div style={styles.form}>
         <select
           style={styles.select}
@@ -75,6 +62,8 @@ const RegisterPage = () => {
           value={senha}
           onChange={(e) => setSenha(e.target.value)}
         />
+
+        {error && <p style={styles.error}>{error}</p>}
         
         <button onClick={handleRegister} style={styles.button}>
           Cadastrar Usuário
@@ -141,8 +130,10 @@ const styles = {
     marginBottom: '10px',
     boxSizing: 'border-box',
   },
-  buttonHover: {
-    backgroundColor: '#0056b3',
+  error: {
+    color: 'red',
+    fontSize: '14px',
+    marginBottom: '10px',
   },
 };
 
