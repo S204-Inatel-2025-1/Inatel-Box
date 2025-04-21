@@ -1,6 +1,5 @@
-// backend/controllers/authController.js
 const { db } = require('../services/fireBaseConfig.cjs');
-const { generateCustomToken, verificarUsuario } = require('../services/authService.cjs'); // Importa a função
+const { generateCustomToken, verificarUsuario } = require('../services/authService.cjs');
 
 const login = async (req, res) => {
   const { matricula, senha } = req.body;
@@ -19,10 +18,8 @@ const login = async (req, res) => {
       return res.status(401).json({ error: 'Senha incorreta' });
     }
 
-    // Gera o token personalizado
     const customToken = await generateCustomToken(userData.matricula, userData.tipo);
 
-    // Retorna o token para o frontend
     res.json({ token: customToken, ...userData, matricula});
   } catch (error) {
     console.error('Erro no login:', error);
@@ -38,13 +35,16 @@ const register = async (req, res) => {
       return res.status(400).json({ error: 'Preencha todos os campos!' });
     }
 
-    const userRef = db.collection('usuarios').doc(matricula);
-    const userDoc = await userRef.get();
+    const snapshot = await db.collection('usuarios')
+      .where('matricula', '==', matricula)
+      .where('curso', '==', curso)
+      .get();
 
-    if (userDoc.exists) {
-      return res.status(400).json({ error: 'Usuário já cadastrado!' });
+    if (!snapshot.empty) {
+      return res.status(400).json({ error: 'Já existe um usuário com essa matrícula e curso.' });
     }
 
+    const userRef = db.collection('usuarios').doc(matricula);
     await userRef.set({
       matricula,
       senha,
