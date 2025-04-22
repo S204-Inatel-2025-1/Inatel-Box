@@ -19,7 +19,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16'
+          node-version: '18'
 
       - name: Install dependencies
         run: |
@@ -29,7 +29,9 @@ jobs:
           - name: Start app in background
           run: |
             cd frontend
-            npm start
+            npm start &
+        env:
+          CI: true
   
       - name: Wait for app to be ready
         run: npx wait-on http://localhost:3000
