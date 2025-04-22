@@ -23,14 +23,14 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd frontend
+          cd tests
           npm install
         env:
           CI: true
 
       - name: Start app in background
         run: |
-          cd frontend
+          cd tests
           npm start &
         env:
           CI: true
