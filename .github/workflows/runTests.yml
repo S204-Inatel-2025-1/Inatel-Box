@@ -29,9 +29,7 @@ jobs:
           - name: Start app in background
           run: |
             cd frontend
-            npm start &
-          env:
-            CI: true
+            npm start
   
       - name: Wait for app to be ready
         run: npx wait-on http://localhost:3000
