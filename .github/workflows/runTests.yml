@@ -26,7 +26,18 @@ jobs:
           cd frontend
           npm install
 
-      - name: Run Tests
+          - name: Start app in background
+          run: |
+            cd frontend
+            npm start &
+          env:
+            CI: true
+  
+      - name: Wait for app to be ready
+        run: npx wait-on http://localhost:3000
+
+      - name: Run Cypress tests
         run: |
-          cd frontend
-          npm test
+          cd tests
+          npx cypress install
+          npx cypress run
