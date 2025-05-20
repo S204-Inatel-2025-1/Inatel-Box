@@ -1,14 +1,22 @@
 // src/components/Navbar.jsx
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { FiArrowLeft } from 'react-icons/fi';
 
 const Navbar = () => {
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    navigate(-1); // volta para a página anterior
+  };
+
   return (
     <nav style={styles.nav}>
-      <Link to="/" style={styles.link}>Charging</Link>
-      <Link to="/login" style={styles.link}>Login</Link>
-      <Link to="/register" style={styles.link}>Register</Link>
-      <Link to="/home" style={styles.link}>Home</Link>
+      <button onClick={handleBack} style={styles.backButton}>
+        <FiArrowLeft size={20} style={{ marginRight: 5 }} />
+      </button>
+      <h1 style={styles.title}>INATEL</h1>
+      <div style={{ width: 75 }} /> {/* espaço reservado para manter o título centralizado */}
     </nav>
   );
 };
@@ -16,14 +24,25 @@ const Navbar = () => {
 const styles = {
   nav: {
     display: 'flex',
-    justifyContent: 'space-around',
-    padding: '10px',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '10px 20px',
     backgroundColor: '#007bff',
-  },
-  link: {
     color: '#fff',
-    textDecoration: 'none',
-    fontSize: '16px',
+  },
+  backButton: {
+    backgroundColor: 'transparent',
+    border: 'none',
+    color: '#fff',
+    fontSize: '20px',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  title: {
+    margin: 0,
+    fontSize: '20px',
+    fontWeight: 'bold',
   },
 };
 

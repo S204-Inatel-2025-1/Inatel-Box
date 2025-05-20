@@ -30,7 +30,8 @@ const RegisterPage = () => {
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.title}>Almoxarifado Inatel</h2>
+      <h1 style={styles.title}>Almoxarifado Inatel</h1>
+      <h2 style={styles.title}>Cadastro</h2>
       <div style={styles.form}>
         <select
           style={styles.select}

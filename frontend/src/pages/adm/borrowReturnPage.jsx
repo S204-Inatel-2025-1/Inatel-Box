@@ -46,22 +46,13 @@ const BorrowReturnPage = () => {
         onChange={(e) => setMatricula(e.target.value)}
         style={styles.input}
       />
-      <ul>
-        {components.map((component) => (
-          <li key={component.id} style={styles.listItem}>
-            {component.nome} - Quantidade: {component.quantidade}
-            {component.emprestadoPara ? (
-              <button onClick={() => handleReturn(component.id)} style={styles.returnButton}>
-                Devolver
-              </button>
-            ) : (
-              <button onClick={() => handleBorrow(component.id)} style={styles.borrowButton}>
-                Emprestar
-              </button>
-            )}
-          </li>
-        ))}
-      </ul>
+      <input
+        type="text"
+        placeholder="ID do Componente"
+        value={matricula}
+        onChange={(e) => setMatricula(e.target.value)}
+        style={styles.input}
+      />
     </div>
   );
 };
