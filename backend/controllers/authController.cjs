@@ -1,29 +1,46 @@
+// backend/controllers/authController.js
 const { db } = require('../services/fireBaseConfig.cjs');
-const { generateCustomToken, verificarUsuario } = require('../services/authService.cjs');
+const { generateCustomToken, verificarUsuario, obterDadosUsuario } = require('../services/authService.cjs');
 
 const login = async (req, res) => {
   const { matricula, senha } = req.body;
 
   try {
-    const userRef = db.collection('usuarios').doc(matricula);
-    const userDoc = await userRef.get();
-
-    if (!userDoc.exists) {
-      return res.status(404).json({ error: 'Usuário não encontrado' });
+    // 1. Verifica as credenciais
+    const usuarioVerificado = await verificarUsuario(matricula, senha);
+    
+    if (!usuarioVerificado) {
+      return res.status(401).json({ error: 'Matrícula ou senha incorretas' });
     }
 
-    const userData = userDoc.data();
+    // 2. Gera o token JWT
+    const customToken = await generateCustomToken(usuarioVerificado.uid, usuarioVerificado.tipo);
 
-    if (userData.senha !== senha) {
-      return res.status(401).json({ error: 'Senha incorreta' });
+    // 3. Obtém dados completos do usuário (sem a senha)
+    const userData = await obterDadosUsuario(matricula);
+    if (!userData) {
+      return res.status(404).json({ error: 'Dados do usuário não encontrados' });
     }
 
-    const customToken = await generateCustomToken(userData.matricula, userData.tipo);
+    // Remove a senha antes de enviar a resposta
+    const { senha: _, ...dadosSeguros } = userData;
 
-    res.json({ token: customToken, ...userData, matricula});
+    // 4. Retorna resposta completa
+    res.json({
+      token: customToken,
+      usuario: {
+        matricula: dadosSeguros.matricula,
+        tipo: dadosSeguros.tipo,
+        curso: dadosSeguros.curso || ''
+      }
+    });
+
   } catch (error) {
     console.error('Erro no login:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ 
+      error: 'Erro interno no servidor',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 };
 
@@ -35,6 +52,7 @@ const register = async (req, res) => {
       return res.status(400).json({ error: 'Preencha todos os campos!' });
     }
 
+    // Verifica se já existe um usuário com mesma matrícula e curso
     const snapshot = await db.collection('usuarios')
       .where('matricula', '==', matricula)
       .where('curso', '==', curso)
@@ -44,6 +62,7 @@ const register = async (req, res) => {
       return res.status(400).json({ error: 'Já existe um usuário com essa matrícula e curso.' });
     }
 
+    // Agora salva normalmente com o ID da matrícula (ou você pode usar .add())
     const userRef = db.collection('usuarios').doc(matricula);
     await userRef.set({
       matricula,

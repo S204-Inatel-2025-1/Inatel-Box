@@ -1,49 +1,45 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { auth } from '../services/fireBaseConfig';
+import { onAuthStateChanged } from 'firebase/auth';
+import SplashPage from './splashPage';
 
 const HomePage = () => {
-  const [components, setComponents] = useState([]);
   const navigate = useNavigate();
-  const location = useLocation();
-  const user = location.state?.user; // Dados do usuário passados no login
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
   useEffect(() => {
-    // Buscar componentes do backend
-    fetch('http://localhost:5000/components/list')
-      .then((response) => response.json())
-      .then((data) => setComponents(data))
-      .catch((error) => console.error('Erro ao buscar componentes:', error));
-  }, []);
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          // 🔄 Atualiza token para pegar claims mais recentes
+          await user.getIdToken(true);
+          const idTokenResult = await user.getIdTokenResult();
+          const userType = idTokenResult.claims.tipo || 'ALUNO';
 
-  return (
-    <div>
-      <h1>Bem-vindo, {user.matricula}</h1>
+          // ✅ Redireciona conforme o tipo
+          if (userType === 'ADM') {
+            navigate('/manage-components', { replace: true });
+          } else {
+            navigate('/my-components', { replace: true });
+          }
+        } catch (error) {
+          console.error('Erro ao obter claims:', error);
+          navigate('/login', { replace: true });
+        }
+      } else {
+        // 🔐 Se não estiver logado, manda pro login
+        navigate('/login', { replace: true });
+      }
 
-      {user.tipo === 'ADM' ? (
-        <div>
-          <h2>Painel do ADM</h2>
-          <button onClick={() => navigate('/add-components')}>Adicionar Componente</button>
-          <button onClick={() => navigate('/manage-components')}>Gerenciar Componentes</button>
-          <button onClick={() => navigate('/borrow-return')}>Emprestar / Devolver</button>
-        </div>
-      ) : (
-        <div>
-          <h2>Painel do Aluno</h2>
-          <button onClick={() => navigate('/search-components')}>Procurar Componentes</button>
-          <button onClick={() => navigate('/my-components')}>Meus Componentes</button>
-        </div>
-      )}
+      setCheckingAuth(false);
+    });
 
-      <h3>Componentes Disponíveis</h3>
-      <ul>
-        {components.map((component) => (
-          <li key={component.id}>
-            {component.nome} - Quantidade: {component.quantidade}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+    return unsubscribe;
+  }, [navigate]);
+
+  // Enquanto verifica a autenticação, exibe SplashPage
+  return checkingAuth ? <SplashPage /> : null;
 };
 
 export default HomePage;

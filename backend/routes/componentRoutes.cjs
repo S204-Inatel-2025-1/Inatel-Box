@@ -2,6 +2,7 @@
 const express = require('express');
 const { addComponent, borrowComponent, returnComponent, listComponents } = require('../controllers/componentController.cjs');
 const { authenticate, isAdmin } = require('../middlewares/authMiddleware.cjs');
+const { getFirestore } = require('firebase-admin/firestore');
 
 const router = express.Router();
 

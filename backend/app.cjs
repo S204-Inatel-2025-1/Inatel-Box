@@ -1,3 +1,4 @@
+// backend/app.cjs
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
@@ -6,13 +7,14 @@ const componentRoutes = require('./routes/componentRoutes.cjs');
 
 const app = express();
 
+// Configura o CORS
 app.use(cors({
-  origin: 'http://localhost:3000', // ermite apenas reqs do frontend
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'], //Cabeçalhos
+  origin: 'http://localhost:3000', // Permite apenas requisições do frontend
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos
+  allowedHeaders: ['Content-Type', 'Authorization'], // Cabeçalhos permitidos
 }));
 
-app.use(morgan('dev')); //Mostra logs das reqs no terminal
+app.use(morgan('dev')); // Mostra logs das requisições no terminal
 app.use(express.json());
 
 // Rotas
@@ -29,10 +31,5 @@ if (require.main === module) {
     console.log(`Servidor rodando na porta ${PORT}`);
   });
 }
-
-app.post('/components/add', (req, res) => {
-  console.log('📩 JSON Recebido:', req.body);
-  res.json({ message: 'JSON interceptado!', recebido: req.body });
-});
 
 module.exports = app;

@@ -1,3 +1,4 @@
+// frontend/src/index.js
 import React, { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
@@ -23,7 +24,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <SplashPage />, // Rota padrão (login)
+        element: <HomePage />, // Rota padrão (login)
       },
       {
         path: '/login',

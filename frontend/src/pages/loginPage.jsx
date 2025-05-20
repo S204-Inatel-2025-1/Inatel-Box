@@ -1,28 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-<<<<<<< Updated upstream
-import { login } from '../services/api'; // Importe a função de login do serviço de API
-=======
 import { login } from '../services/api';
->>>>>>> Stashed changes
+import { signInWithCustomToken } from 'firebase/auth';
+import { auth } from '../services/fireBaseConfig';
 
 const LoginPage = () => {
   const [matricula, setMatricula] = useState('');
   const [senha, setSenha] = useState('');
-<<<<<<< Updated upstream
-  const [usuarios, setUsuarios] = useState([]); // Estado para armazenar os usuários cadastrados
-  const [usuarioSelecionado, setUsuarioSelecionado] = useState(null); // Estado para o usuário selecionado
-  const [error, setError] = useState(''); // Estado para mensagens de erro
-
-  const navigate = useNavigate();
-
-  // Função para carregar os usuários cadastrados (opcional, se ainda quiser usar a lista de usuários)
-  useEffect(() => {
-    const carregarUsuarios = async () => {
-      const response = await fetch('http://localhost:5000/auth/usuarios');
-      const data = await response.json();
-      setUsuarios(data);
-=======
   const [usuarios, setUsuarios] = useState([]);
   const [usuarioSelecionado, setUsuarioSelecionado] = useState(null);
   const [error, setError] = useState('');
@@ -38,39 +22,63 @@ const LoginPage = () => {
       } catch (err) {
         console.error('Erro ao carregar usuários:', err);
       }
->>>>>>> Stashed changes
     };
 
     carregarUsuarios();
   }, []);
 
   const handleLogin = async () => {
-    try {
-      setError(''); // Limpa erros anteriores
-      
-      if (!usuarioSelecionado) {
-        alert('Selecione um usuário!');
-        return;
-      }
+  try {
+    setError('');
 
-<<<<<<< Updated upstream
-      // Faz a chamada ao backend para autenticar o usuário
-      const user = await login(usuarioSelecionado.matricula, senha);
-
-      console.log('Login bem-sucedido:', user);
-      navigate('/home', { state: { user } }); // Redireciona para a home com os dados do usuário
-=======
-      const user = await login(usuarioSelecionado.matricula, senha);
-      console.log('Login bem-sucedido:', user);
-      navigate('/home', { state: { user } });
->>>>>>> Stashed changes
-    } catch (error) {
-      setError('Matrícula ou senha incorretas');
+    if (!usuarioSelecionado) {
+      alert('Selecione um usuário!');
+      return;
     }
-  };
+
+    const response = await fetch('http://localhost:5000/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ matricula: usuarioSelecionado.matricula, senha }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Erro no login');
+    }
+
+    const dados = await response.json();
+    console.log('✅ Token recebido da API:', dados.token);
+
+    if (!dados.token) {
+      throw new Error('Token ausente na resposta da API');
+    }
+
+    await signInWithCustomToken(auth, dados.token)
+      .then((userCredential) => {
+        console.log('✅ Login Firebase bem-sucedido:', userCredential.user);
+      })
+      .catch((firebaseError) => {
+        console.error('❌ Erro no signInWithCustomToken:', firebaseError.code, firebaseError.message);
+        throw new Error('Erro ao autenticar com o Firebase');
+      });
+
+    const user = auth.currentUser;
+    if (user) {
+      const refreshedToken = await user.getIdToken(true);
+      console.log('🔄 Token atualizado com claims:', refreshedToken);
+    }
+
+    navigate('/home');
+  } catch (error) {
+    console.error('❌ Erro no login final:', error);
+    setError(error.message || 'Matrícula ou senha incorretas');
+  }
+};
 
   return (
     <div style={styles.container}>
+      <h1 style={styles.title}>Almoxarifado Inatel</h1>
       <h2 style={styles.title}>Login</h2>
       <div style={styles.form}>
         <select
@@ -134,8 +142,8 @@ const styles = {
     height: '100vh',
     width: '100vw',
     backgroundColor: '#f0f0f0',
-    margin: 0, // Remove margens
-    padding: 0, // Remove paddings
+    margin: 0,
+    padding: 0,
   },
   title: {
     fontSize: '24px',
@@ -146,41 +154,41 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
-    maxWidth: '400px', // Define uma largura máxima
-    padding: '20px', // Padding interno
+    maxWidth: '400px',
+    padding: '20px',
     backgroundColor: '#f0f0f0',
-    boxSizing: 'border-box', // Garante que padding não aumente a largura
+    boxSizing: 'border-box',
   },
   input: {
     marginBottom: '10px',
-    padding: '12px', // Padding interno
+    padding: '12px',
     fontSize: '16px',
     borderRadius: '4px',
-    border: '1px solid #ccc', // Borda simples
+    border: '1px solid #ccc',
     width: '100%',
-    boxSizing: 'border-box', // Garante que padding e borda não aumentem a largura
+    boxSizing: 'border-box',
   },
   select: {
     marginBottom: '10px',
-    padding: '12px', // Padding interno
+    padding: '12px',
     fontSize: '16px',
     borderRadius: '4px',
-    border: '1px solid #ccc', // Borda simples
+    border: '1px solid #ccc',
     width: '100%',
     backgroundColor: '#fff',
-    boxSizing: 'border-box', // Garante que padding e borda não aumentem a largura
+    boxSizing: 'border-box',
   },
   button: {
-    padding: '12px', // Padding interno
+    padding: '12px',
     fontSize: '16px',
     backgroundColor: '#007bff',
     color: '#fff',
     border: 'none',
     borderRadius: '4px',
     cursor: 'pointer',
-    width: '100%', // Ocupa 100% da largura do form
-    marginBottom: '10px', // Adiciona margem inferior para espaçamento entre os botões
-    boxSizing: 'border-box', // Garante que padding e borda não aumentem a largura
+    width: '100%',
+    marginBottom: '10px',
+    boxSizing: 'border-box',
   },
   errorMessage: {
     color: 'red',
