@@ -131,14 +131,16 @@ export const returnComponent = async (componentId) => {
   }
 };
 
+// DELETAR COMPONENTE
 export const deleteComponent = async (componentId) => {
   const user = auth.currentUser;
   const token = await user.getIdToken();
-  
-  const response = await axios.delete(`${API_BASE_URL}/components/delete/${componentId}`, {
+
+  const response = await api.delete(`/components/delete/${componentId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
+
   return response.data;
 };
