@@ -28,12 +28,74 @@ As tarefas são distribuídas entre os membros da equipe e gerenciadas por meio 
 - **Felipe**
 
 ## 🛠 Tecnologias Utilizadas
-- **Front-end:** React, React Bootstrap
-- **Back-end:** Firebase (Authentication, Firestore, Storage)
-- **Testes:** Cypress, Jest e K6
+<div/>
 
-## 🚀 Motivação
-O projeto começou com um levantamento das necessidades dos alunos da RobotBulls quando precisam de alguma ferramenta ou algum componente. 
+🖥️ **Frontend**  
+![React](https://img.shields.io/badge/React-18.x-61DAFB?logo=react&style=for-the-badge)
 
+📦 **Backend**  
+![Node.js](https://img.shields.io/badge/Node.js-18.x-339933?logo=node.js&style=for-the-badge)
+![Firebase](https://img.shields.io/badge/Firebase-9.x-FFCA28?logo=firebase&style=for-the-badge&logoColor=black)
 
+🧪 **Testes**  
+![Jest](https://img.shields.io/badge/Jest-29.x-C21325?logo=jest&style=for-the-badge)
+![Cypress](https://img.shields.io/badge/Cypress-12.x-17202C?logo=cypress&style=for-the-badge)
+![k6](https://img.shields.io/badge/k6-0.45.x-7D64FF?logo=k6&style=for-the-badge)
+</div>
 
+## 🔗 Diagrama de Fluxo (Comunicação entre o Frontend e Backend)
+```mermaid
+sequenceDiagram
+    participant Frontend
+    participant Backend
+    participant Firebase
+    participant Firestore
+    
+    Frontend->>Backend: POST /componentes (com token JWT)
+    Backend->>Firebase: Valida token
+    Firebase-->>Backend: Dados do usuário
+    Backend->>Firestore: Cria novo documento
+    Firestore-->>Backend: Confirmação
+    Backend-->>Frontend: { success: true, id: "123" }
+```
+## Como Executar
+Pré-requisitos
+- Node.js 18.1
+
+- Firebase Project 
+
+- Conta de serviço Firebase
+
+  ### 1-Clone o repositório
+  ```bash
+  git clone https://github.com/seu-usuario/almoxarifado-eletronico.git
+  cd almoxarifado-eletronico
+  ```
+
+  ### 2-Backend
+
+  ```bash
+  cd backend
+  npm start
+  ```
+
+  ### 3-Frontend
+  
+  ```bash
+  cd frontend
+  npm start
+  ```
+## Comandos Para Testes
+  ### Cypress (frontend + e2e):
+  
+  ```bash
+       cd tests
+       npx cypress run
+  ```
+     
+  ### Jest (CRUD + integração):
+  ```bash
+       cd tests
+       jest tests/integration/component.tests.cjs 
+       jest tests/integration/auth.tests.cjs
+  ```
