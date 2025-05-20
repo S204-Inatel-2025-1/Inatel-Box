@@ -103,11 +103,6 @@ const styles = {
     gap: '10px', // espaço entre os botões
     marginBottom: '20px', // espaço abaixo dos botões
   },
-  buttonGroup: {
-    display: 'flex',
-    gap: '10px',
-    marginBottom: '20px',
-  },
   welcomeTitle: {
     margin: 0,
   },
