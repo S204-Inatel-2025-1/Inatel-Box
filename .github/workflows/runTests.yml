@@ -53,7 +53,7 @@ jobs:
 
       - name: Run Jest backend tests
         run: |
-          cd backend
+          cd tests
           npm test
 
       - name: Run Cypress tests
