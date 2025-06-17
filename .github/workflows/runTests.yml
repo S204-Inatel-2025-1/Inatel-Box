@@ -37,12 +37,11 @@ jobs:
       - name: Install K6
         run: |
           cd tests
-          sudo apt update
-          sudo apt install -y gnupg software-properties-common
-          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 33E652B0
-          echo "deb https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
-          sudo apt update
-          sudo apt install -y k6
+          curl -s https://api.github.com/repos/grafana/k6/releases/latest \
+            | grep "browser_download_url.*amd64.deb" \
+            | cut -d '"' -f 4 \
+            | wget -qi -
+          sudo dpkg -i k6_*.deb
 
       - name: Start backend
         run: |
