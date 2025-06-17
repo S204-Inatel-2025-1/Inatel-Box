@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "k6": "^0.0.0"
   },
   "devDependencies": {
     "cypress": "^14.2.1",
@@ -14,7 +15,9 @@
   },
   "jest": {
     "testEnvironment": "node",
-    "setupFilesAfterEnv": ["./tests/setup.cjs"],
+    "setupFilesAfterEnv": [
+      "./tests/setup.cjs"
+    ],
     "testMatch": [
       "**/tests/integration/*.tests.cjs"
     ],
