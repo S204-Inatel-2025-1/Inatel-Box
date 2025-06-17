@@ -36,10 +36,9 @@ export const login = async (matricula, senha) => {
       usuario: {
         tipo: response.data.tipo,
         curso: response.data.curso,
-        matricula: response.data.matricula
-      }
+        matricula: response.data.matricula,
+      },
     };
-
   } catch (error) {
     console.error('Erro ao fazer login:', error);
     throw error;
@@ -63,7 +62,7 @@ export const listComponents = async (filters = {}) => {
   const token = await user.getIdToken();
   const query = new URLSearchParams(filters).toString();
 
-  const response = await axios.get(`${API_BASE_URL}/components/list?${query}`, {
+  const response = await api.get(`/components/list?${query}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -92,19 +91,20 @@ export const addComponent = async (id, tipo, especificacao) => {
   }
 };
 
-// EMPRESTAR COMPONENTE
-export const borrowComponent = async (componentId) => {
+// EMPRESTAR COMPONENTE (corrigido!)
+export const borrowComponent = async (componentId, matricula) => {
   try {
     const user = auth.currentUser;
     const token = await user.getIdToken();
 
-    const emprestimo = { componentId };
+    const emprestimo = { componentId, matricula };
 
-    const response = await api.post('/emprestimos', emprestimo, {
+    const response = await api.post('/components/borrow', emprestimo, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
+
     return response.data;
   } catch (error) {
     console.error('Erro ao registrar empréstimo:', error);
