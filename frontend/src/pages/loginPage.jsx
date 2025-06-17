@@ -15,7 +15,7 @@ const LoginPage = () => {
   useEffect(() => {
     const carregarUsuarios = async () => {
       try {
-        const response = await fetch('http://localhost:5000/auth/usuarios');
+        const response = await fetch('https://inatel-box.onrender.com/auth/usuarios');
         const data = await response.json();
         setUsuarios(data);
       } catch (err) {
@@ -35,7 +35,7 @@ const LoginPage = () => {
         return;
       }
 
-      const response = await fetch('http://localhost:5000/auth/login', {
+      const response = await fetch('https://inatel-box.onrender.com/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ matricula: usuarioSelecionado.matricula, senha }),
