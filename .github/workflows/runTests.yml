@@ -38,12 +38,16 @@ jobs:
         run: |
           cd tests
 
+          sudo apt-get remove -y k6
+          sudo rm -f /etc/apt/sources.list.d/grafana.list
+
           sudo apt-get update
-          sudo apt-get install -y apt-transport-https
+          sudo apt-get install -y ca-certificates gnupg2
 
-          sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 379CE192D401AB61
-          echo "deb https://dl.bintray.com/grafana/stable/debian stable main" | sudo tee -a /etc/apt/sources.list
-
+          sudo mkdir -p /etc/apt/keyrings
+          curl -fsSL https://grafana.com/api/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/grafana.gpg
+          echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+          
           sudo apt-get update
           sudo apt-get install -y k6
 
