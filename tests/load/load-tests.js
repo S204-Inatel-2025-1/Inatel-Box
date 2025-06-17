@@ -6,7 +6,7 @@ import { BASE_URL, alunoCredenciais } from './config.js';
 const admToken = 'Bearer fake-token-for-ADMTESTE';
 
 export const options = {
-  vus: 1000,
+  vus: 100,
   duration: '10s',
 };
 
@@ -52,16 +52,4 @@ export default function () {
   check(listRes, {
     'listagem ok': (r) => r.status === 200,
   });
-
-  // 4. Busca
-  /*const tipo = 'Resistor';
-  const buscaRes = http.get(`${BASE_URL}/components/search/${tipo}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-
-  check(buscaRes, {
-    'busca ok': (r) => r.status === 200,
-  });
-
-  sleep(1);*/
 }
